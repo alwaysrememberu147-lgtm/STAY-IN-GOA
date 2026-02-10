@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madgaon AC Dormitory - Live Bed Availability</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e5799 0%, #207cca 100%);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .status-bar {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .availability {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .availability-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+        
+        .available {
+            background-color: #2ecc71;
+        }
+        
+        .limited {
+            background-color: #f39c12;
+        }
+        
+        .full {
+            background-color: #e74c3c;
+        }
+        
+        .availability-text h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .availability-text p {
+            color: #666;
+        }
+        
+        .last-updated {
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .bed-display {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #1e5799;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .beds-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+        
+        @media (max-width: 1100px) {
+            .beds-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .beds-container {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .beds-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .beds-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .bed {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .bed-available {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 2px solid #2ecc71;
+        }
+        
+        .bed-occupied {
+            background-color: #ffebee;
+            color: #c0392b;
+            border: 2px solid #e74c3c;
+        }
+        
+        .bed:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .booking-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #1e5799;
+            outline: none;
+        }
+        
+        button {
+            background: linear-gradient(to right, #1e5799, #207cca);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: linear-gradient(to right, #18447e, #1c6cb0);
+            box-shadow: 0 5px 12px rgba(30, 87, 153, 0.3);
+        }
+        
+        .features {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        
+        .feature-item i {
+            color: #1e5799;
+            font-size: 1.5rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .contact-item i {
+            color: #1e5799;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .live-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .bed-number {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-bed"></i>
+                <h1>Madgaon AC Dormitory</h1>
+            </div>
+            <p class="tagline">30-Bed Fully AC Dormitory in Goa • Live Availability Updates</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="status-bar">
+            <div class="availability">
+                <div class="availability-icon available">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <div class="availability-text">
+                    <h2 id="available-beds">18 Beds Available</h2>
+                    <p>Out of 30 Total Beds • <span class="live-indicator"></span> LIVE</p>
+                </div>
+            </div>
+            <div class="last-updated">
+                Last updated: <span id="update-time">Just now</span>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="bed-display">
+                <h2 class="section-title">Live Bed Status</h2>
+                <div class="beds-container" id="beds-container">
+                    <!-- Beds will be dynamically generated here -->
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 15px; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div style="width: 20px; height: 20px; background-color: #d5f4e6; border: 2px solid #2ecc71; border-radius: 4px;"></div>
+                        <span>Available</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div style="width: 20px; height: 20px; background-color: #ffebee; border: 2px solid #e74c3c; border-radius: 4px;"></div>
+                        <span>Occupied</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="booking-form">
+                <h2 class="section-title">Book a Bed</h2>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" required placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required placeholder="Enter your phone number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required placeholder="Enter your email address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="checkin">Check-in Date</label>
+                        <input type="date" id="checkin" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nights">Number of Nights</label>
+                        <select id="nights" required>
+                            <option value="" disabled selected>Select nights</option>
+                            <option value="1">1 Night</option>
+                            <option value="2">2 Nights</option>
+                            <option value="3">3 Nights</option>
+                            <option value="4">4 Nights</option>
+                            <option value="5">5 Nights</option>
+                            <option value="6">6 Nights</option>
+                            <option value="7">7+ Nights</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="beds">Number of Beds</label>
+                        <select id="beds" required>
+                            <option value="" disabled selected>Select beds</option>
+                            <option value="1">1 Bed</option>
+                            <option value="2">2 Beds</option>
+                            <option value="3">3 Beds</option>
+                            <option value="4">4 Beds</option>
+                            <option value="5">5+ Beds</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Additional Requests (Optional)</label>
+                        <textarea id="message" rows="3" placeholder="Any special requirements or questions"></textarea>
+                    </div>
+                    
+                    <button type="submit">Request Booking</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h2 class="section-title">Dormitory Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <i class="fas fa-snowflake"></i>
+                    <div>
+                        <h3>Fully Air Conditioned</h3>
+                        <p>Complete AC comfort in all areas</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-wifi"></i>
+                    <div>
+                        <h3>High-Speed WiFi</h3>
+                        <p>Free high-speed internet access</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-lock"></i>
+                    <div>
+                        <h3>Secure Lockers</h3>
+                        <p>Individual lockers for each bed</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shower"></i>
+                    <div>
+                        <h3>Attached Bathrooms</h3>
+                        <p>Clean attached bathrooms</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-tshirt"></i>
+                    <div>
+                        <h3>Laundry Service</h3>
+                        <p>Affordable laundry available</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <div>
+                        <h3>Central Location</h3>
+                        <p>Heart of Madgaon, Goa</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Madgaon AC Dormitory &copy; <span id="current-year"></span> | Live Bed Verification System</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Madgaon, Goa, India</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+91 XXX XXX XXXX</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>info@madgaondormitory.com</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <div class="notification" id="notification">
+        Booking request submitted successfully!
+    </div>
+    
+    <script>
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Set minimum date for check-in to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('checkin').min = today;
+        
+        // Initialize bed data
+        let beds = [];
+        const totalBeds = 30;
+        
+        // Generate initial bed data (simulating some occupied beds)
+        function initializeBeds() {
+            beds = [];
+            for (let i = 1; i <= totalBeds; i++) {
+                // Randomly assign some beds as occupied (for demo)
+                const isOccupied = Math.random() > 0.6 && i > 5;
+                beds.push({
+                    number: i,
+                    occupied: isOccupied,
+                    lastUpdated: new Date()
+                });
+            }
+            updateBedDisplay();
+        }
+        
+        // Update bed display
+        function updateBedDisplay() {
+            const bedsContainer = document.getElementById('beds-container');
+            bedsContainer.innerHTML = '';
+            
+            let availableCount = 0;
+            
+            beds.forEach(bed => {
+                if (!bed.occupied) availableCount++;
+                
+                const bedElement = document.createElement('div');
+                bedElement.className = `bed ${bed.occupied ? 'bed-occupied' : 'bed-available'}`;
+                bedElement.innerHTML = `
+                    <div class="bed-number">${bed.number}</div>
+                `;
+                
+                // Add click event to toggle bed status (for demo purposes)
+                bedElement.addEventListener('click', () => {
+                    // In a real system, this would be admin-only functionality
+                    console.log(`Bed ${bed.number} clicked`);
+                });
+                
+                bedsContainer.appendChild(bedElement);
+            });
+            
+            // Update available beds count
+            document.getElementById('available-beds').textContent = `${availableCount} Beds Available`;
+            
+            // Update status bar color based on availability
+            const statusIcon = document.querySelector('.availability-icon');
+            if (availableCount > 10) {
+                statusIcon.className = 'availability-icon available';
+            } else if (availableCount > 0) {
+                statusIcon.className = 'availability-icon limited';
+            } else {
+                statusIcon.className = 'availability-icon full';
+            }
+            
+            // Update time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('update-time').textContent = `Today at ${timeString}`;
+        }
+        
+        // Simulate real-time updates (for demo)
+        function simulateUpdates() {
+            // Randomly change bed status occasionally
+            setInterval(() => {
+                // Only simulate if we're not in the middle of a booking
+                const changeCount = Math.floor(Math.random() * 3); // 0-2 changes
+                
+                for (let i = 0; i < changeCount; i++) {
+                    const randomIndex = Math.floor(Math.random() * totalBeds);
+                    // Slight chance to toggle status
+                    if (Math.random() > 0.7) {
+                        beds[randomIndex].occupied = !beds[randomIndex].occupied;
+                        beds[randomIndex].lastUpdated = new Date();
+                    }
+                }
+                
+                updateBedDisplay();
+            }, 10000); // Update every 10 seconds
+        }
+        
+        // Handle booking form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const bedsRequested = parseInt(document.getElementById('beds').value);
+            const availableBeds = beds.filter(bed => !bed.occupied).length;
+            
+            // Check if enough beds are available
+            if (bedsRequested > availableBeds) {
+                alert(`Sorry, only ${availableBeds} beds are available. Please adjust your booking.`);
+                return;
+            }
+            
+            // In a real system, this would send data to a server
+            // For demo, we'll simulate booking by occupying beds
+            let bedsBooked = 0;
+            for (let i = 0; i < beds.length && bedsBooked < bedsRequested; i++) {
+                if (!beds[i].occupied) {
+                    beds[i].occupied = true;
+                    beds[i].lastUpdated = new Date();
+                    bedsBooked++;
+                }
+            }
+            
+            updateBedDisplay();
+            
+            // Show notification
+            const notification = document.getElementById('notification');
+            notification.textContent = `Booking request for ${bedsRequested} bed(s) submitted successfully!`;
+            notification.style.display = 'block';
+            notification.style.backgroundColor = '#2ecc71';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+            
+            // Reset form
+            this.reset();
+        });
+        
+        // Initialize the page
+        initializeBeds();
+        simulateUpdates();
+    </script>
+</body>
+</html>
